@@ -6,6 +6,7 @@
 //
 
 import Alamofire
+import Foundation
 
 class OpenAIManager {
     func postToOpenAI(apiKey: String, base64Image: String, completion: @escaping (String?) -> Void) {
@@ -36,10 +37,17 @@ class OpenAIManager {
             "max_tokens": 300
         ]
         
-        AF.request("https://api.openai.com/v1/chat/completions", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseDecodable(of: OpenAIResponse.self) { response in
+        AF.request("https://api.openai.com/v1/chat/completions", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { response in
             switch response.result {
-            case .success(let value):
-                if let content = value.choices.first?.message.content {
+            case .success(let json):
+                print("Raw JSON response: \(json)")
+                if let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted),
+                   let jsonString = String(data: jsonData, encoding: .utf8) {
+                    print("Formatted JSON response: \(jsonString)")
+                }
+                if let data = response.data,
+                   let value = try? JSONDecoder().decode(OpenAIResponse.self, from: data),
+                   let content = value.choices.first?.message.content {
                     completion(content)
                 } else {
                     print("No content available in the response.")
