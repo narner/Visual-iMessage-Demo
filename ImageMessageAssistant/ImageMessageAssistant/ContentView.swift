@@ -23,14 +23,14 @@ struct ContentView: View {
             Image("iMessageHeader")
                 .resizable()
                 .scaledToFit()
-            
-            if isLoading {
+
+            if isLoading && !isPlayingAudio {
                 ProgressView()
                     .padding(.leading, 120)
                     .padding(.top, 40)
                     .foregroundColor(.white)
             }
-            
+
             if isPlayingAudio {
                 HStack(spacing: 4) {
                     ForEach(0..<5, id: \.self) { index in
