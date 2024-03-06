@@ -21,7 +21,7 @@ class RimeTTSManager {
             "speaker": speaker
         ]
 
-        AF.request("http://users.rime.ai/v1/rime-tts", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).response { [self] response in
+        AF.request("https://users.rime.ai/v1/rime-tts", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).response { [self] response in
             switch response.result {
             case .success(let value):
                 if let data = value {
